@@ -1,25 +1,90 @@
-//let nombre = prompt("¿cual es tu nombre?");
+const botonNumeros = document.getElementsByName('data-number');
+const botonOpera = document.getElementsByName('data-opera');
+const botonIgual = document.getElementsByName('data-igual')[0];
+const botonDelete = document.getElementsByName('data-delete') [0];
+let  result = document.getElementById('result');
 
-alert("Hola! Bienvenido a tu calculadora de prueba");
+let opeActual = '';
+let opeAnterior = '';
+let operacion = undefined;
 
-let numero1 = parseInt(prompt("escribe el primer numero"));
-let numero2 = parseInt(prompt("escribe el segundo numero"));
+///for Each aplica a todos los botones "number"
+botonNumeros.forEach(function(boton){
+    boton.addEventListener('click', function(){
+        agregarNumero(boton.innerText);
+    })
 
-let operacion = prompt("elija la operacion que desea realizar");
+});
+///for Each aplica a todos los botones "opera"
+botonOpera.forEach(function(boton){
+    boton.addEventListener('click', function(){
+        selectOperacion(boton.innerText);
+    })
+});
 
-if(operacion = "sumar"){
-    let resultado = parseInt(numero1) + parseInt(numero2)
-    alert("El resultado es " + resultado)
-};
-if (operacion == "restar"){
-    let resultado = parseInt(numero1) - parseInt(numero2)
-    alert("El resultado es " + resultado)
-};
-if (operacion == "multiplicar"){
-    let resultado = parseInt(numero1) * parseInt(numero2)
-    alert("El resultado es " + resultado) 
-};
-if (operacion == "dividir"){
-    let resultado = parseInt(numero1) / parseInt(numero2)
-    alert("El resultado es " + resultado) 
-};
+/// no utilizo for Each porque aplico sobre un solo boton
+botonIgual.addEventListener('click', function(){
+    calcular();
+    actualizarDisplay();
+});
+
+botonDelete.addEventListener('click', function(){
+    clear();
+    actualizarDisplay();
+});
+
+/// logica de la calculadora
+function selectOperacion(op){
+    if(opeActual === '') return;
+    if(opeAnterior !== ''){
+        calcular()
+    }
+    operacion = op.toString();
+    opeAnterior = opeActual;
+    opeActual = '';
+}
+
+function calcular(){
+    let calculo;
+    const anterior = parseFloat(opeAnterior);
+    const actual = parseFloat(opeActual);
+    if(isNaN(anterior) || isNaN(actual)) return;
+    switch(operacion) {
+        case "+":
+            calculo = anterior + actual;
+            break;
+        case "-":
+            calculo = anterior - actual;
+            break;
+        case "x":
+            calculo = anterior * actual;
+            break;
+        case "/":
+            calculo = anterior / actual;
+            break;
+        default:
+            return;
+    }
+    opeActual = calculo;
+    operacion = undefined;
+    opeAnterior = '';
+
+}
+
+
+function agregarNumero(num){
+    opeActual = opeActual.toString() + num.toString();
+    actualizarDisplay();
+}
+
+function clear(){
+    opeActual = '';
+    opeAnterior = '';
+    operacion = undefined;
+}
+
+function actualizarDisplay(){
+    result.value = opeActual;
+}
+
+clear();
